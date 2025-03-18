@@ -23,7 +23,7 @@ export type Question = {
 export type Title = {
   id: string;
   title: string;
-  synopsis: string;
+  synposis: string;
   released: number;
   genre: string;
 };

@@ -33,7 +33,7 @@ export async function seedTitles() {
       try {
         client.sql`
           INSERT INTO titles (id, title, synopsis, released, genre)
-          VALUES (${title.id}, ${title.title}, ${title.synopsis}, ${title.released}, ${title.genre})
+          VALUES (${title.id}, ${title.title}, ${title.synposis}, ${title.released}, ${title.genre})
           ON CONFLICT (id) DO NOTHING;
         `;
       } catch (error) {
