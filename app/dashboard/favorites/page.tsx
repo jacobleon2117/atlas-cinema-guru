@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { fetchFavorites } from '@/lib/data';
 import MovieCard from '@/app/ui/movie-card';
 import Pagination from '@/app/ui/pagination';
-import Link from 'next/link';
 
 export default async function FavoritesPage({
   searchParams,
@@ -25,15 +24,10 @@ export default async function FavoritesPage({
   
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6 text-white">My Favorites</h1>
+      <h1 className="text-3xl font-bold mb-6 text-white text-center">My Favorites</h1>
       
       {movies.length === 0 ? (
-        <div className="bg-[#1c1f50] p-8 rounded-lg text-center">
-          <p className="text-white text-lg mb-4">You haven't added any favorites yet.</p>
-          <Link href="/dashboard" className="bg-[#1ED2AF] text-[#00003c] px-4 py-2 rounded-lg font-medium">
-            Discover Movies
-          </Link>
-        </div>
+        <></>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

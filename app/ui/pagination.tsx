@@ -2,13 +2,15 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Pagination({ page }: { page: number }) {
+export default function Pagination({ page, searchParams }: { page: number, searchParams?: any }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const urlSearchParams = useSearchParams();
   
   const createPageURL = (pageNum: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(urlSearchParams.toString());
+    
     params.set('page', pageNum.toString());
+    
     return `${pathname}?${params.toString()}`;
   };
 
