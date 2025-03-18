@@ -9,6 +9,9 @@ export default async function WatchLaterPage({
 }: {
   searchParams?: {
     page?: string;
+    query?: string;
+    minYear?: string;
+    maxYear?: string;
   };
 }) {
   const session = await auth();
@@ -17,10 +20,13 @@ export default async function WatchLaterPage({
     redirect('/api/auth/signin');
   }
   
-  const params = await searchParams;
-  const page = params?.page ? Number(params.page) : 1;
+  const page = searchParams?.page ? Number(searchParams.page) : 1;
+  const query = searchParams?.query || '';
+  const minYear = searchParams?.minYear ? Number(searchParams.minYear) : 1990;
+  const currentYear = new Date().getFullYear();
+  const maxYear = searchParams?.maxYear ? Number(searchParams.maxYear) : currentYear;
   
-  const movies = await fetchWatchLaters(page, session.user.email);
+  const movies = await fetchWatchLaters(page, session.user.email, minYear, maxYear, query);
   
   return (
     <div>
@@ -36,7 +42,7 @@ export default async function WatchLaterPage({
             ))}
           </div>
           
-          <Pagination page={page} />
+          <Pagination page={page} totalPages={Math.ceil(movies.length / 6)} />
         </>
       )}
     </div>

@@ -1,39 +1,30 @@
-// auth.ts
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
+import type { NextAuthConfig } from "next-auth";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authConfig = {
   theme: {
-    brandColor: "#1ED2AF",
+    brandColor: "#54F4D0",
     logo: "/logo.png",
-    buttonText: "#000000",   // Black text
-    colorScheme: "light"     // Light theme (white background)
+    colorScheme: "light"
   },
   providers: [
-    GitHub({
-      clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET,
-    }),
+    GitHub,
   ],
   callbacks: {
-    authorized: async ({ auth }) => {
+    authorized: ({ auth }) => {
       return !!auth;
     },
-    // Add this redirect callback to ensure proper redirection
-    redirect({ url, baseUrl }) {
-      // Always redirect to the dashboard after signing in
+    redirect: ({ url, baseUrl }: { url: string, baseUrl: string }) => {
       if (url.startsWith(baseUrl)) {
         return "/dashboard";
       }
-      // Allows relative callback URLs
       else if (url.startsWith("/")) {
         return `${baseUrl}/dashboard`;
       }
       return baseUrl;
     },
   },
-  // IMPORTANT: Remove the custom sign-in page reference if it doesn't exist
-  // pages: {
-  //   signIn: "/custom-signin",
-  // },
-});
+} satisfies NextAuthConfig;
+
+export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);

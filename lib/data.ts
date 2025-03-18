@@ -146,7 +146,13 @@ export async function favoriteExists(title_id: string, userEmail: string) {
 /**
  * Get a users watch later list.
  */
-export async function fetchWatchLaters(page: number, userEmail: string) {
+export async function fetchWatchLaters(
+  page: number, 
+  userEmail: string, 
+  minYear?: number, 
+  maxYear?: number, 
+  query?: string
+) {
   try {
     const favorites = (
       await db
@@ -156,11 +162,27 @@ export async function fetchWatchLaters(page: number, userEmail: string) {
         .execute()
     ).map((row) => row.title_id);
 
-    const titles = await db
+    let titlesQuery = db
       .selectFrom("titles")
       .selectAll("titles")
       .innerJoin("watchlater", "titles.id", "watchlater.title_id")
-      .where("watchlater.user_id", "=", userEmail)
+      .where("watchlater.user_id", "=", userEmail);
+
+    // Apply year filter if provided
+    if (minYear !== undefined) {
+      titlesQuery = titlesQuery.where("titles.released", ">=", minYear);
+    }
+
+    if (maxYear !== undefined) {
+      titlesQuery = titlesQuery.where("titles.released", "<=", maxYear);
+    }
+
+    // Apply query filter if provided
+    if (query) {
+      titlesQuery = titlesQuery.where("titles.title", "ilike", `%${query}%`);
+    }
+
+    const titles = await titlesQuery
       .orderBy("titles.released", "asc")
       .limit(6)
       .offset((page - 1) * 6)
