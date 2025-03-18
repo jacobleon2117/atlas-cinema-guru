@@ -106,8 +106,8 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
           >
             {isWatchLater ? (
               <svg className="w-6 h-6" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="1.5" fill="white" fillOpacity="0.2" />
-                <path stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" d="M12 6v6l4 2" />
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm4 14.5L11 13V6h1.5v6.5l3.5 2z" 
+                      fill="white" fillOpacity="0.4" stroke="white" strokeWidth="1.5" />
               </svg>
             ) : (
               <svg className="w-6 h-6" fill="none" stroke="white" strokeWidth="1.5" viewBox="0 0 24 24">

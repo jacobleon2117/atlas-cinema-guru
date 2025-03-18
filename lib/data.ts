@@ -14,6 +14,13 @@ export async function fetchTitles(
   userEmail: string
 ) {
   try {
+    // Validate and sanitize inputs
+    const safeQuery = query.trim();
+    const safePage = Math.max(1, page);
+
+    // Fetch all genres if no genres are provided
+    const safeGenres = genres.length > 0 ? genres : await fetchGenres();
+
     // Get favorites title ids
     const favorites = (
       await db
@@ -32,19 +39,20 @@ export async function fetchTitles(
         .execute()
     ).map((row) => row.title_id);
 
-    //Fetch titles
+    // Construct the base query
     const titles = await db
       .selectFrom("titles")
       .selectAll("titles")
       .where("titles.released", ">=", minYear)
       .where("titles.released", "<=", maxYear)
-      .where("titles.title", "ilike", `%${query}%`)
-      .where("titles.genre", "in", genres)
+      .where("titles.title", "ilike", `%${safeQuery}%`)
+      .where("titles.genre", "in", safeGenres)
       .orderBy("titles.title", "asc")
       .limit(6)
-      .offset((page - 1) * 6)
+      .offset((safePage - 1) * 6)
       .execute();
 
+    // Map titles with additional user-specific information
     return titles.map((row) => ({
       ...row,
       favorited: favorites.includes(row.id),
@@ -53,7 +61,7 @@ export async function fetchTitles(
     }));
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch topics.");
+    throw new Error("Failed to fetch titles.");
   }
 }
 

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Pagination({ page, searchParams }: { page: number, searchParams?: any }) {
+export default function Pagination({ page, totalPages }: { page: number, totalPages: number }) {
   const pathname = usePathname();
   const urlSearchParams = useSearchParams();
   
@@ -13,6 +13,10 @@ export default function Pagination({ page, searchParams }: { page: number, searc
     
     return `${pathname}?${params.toString()}`;
   };
+
+  if (totalPages <= 1) {
+    return null;
+  }
 
   return (
     <div className="mt-8 flex justify-center">
@@ -27,7 +31,9 @@ export default function Pagination({ page, searchParams }: { page: number, searc
         </Link>
         <Link 
           href={createPageURL(page + 1)}
-          className="py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium hover:bg-[#19b995]"
+          className={`py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium ${
+            page >= totalPages ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995]'
+          }`}
         >
           Next
         </Link>

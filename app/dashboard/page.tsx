@@ -1,10 +1,30 @@
+import { Suspense } from 'react';
 import { fetchTitles, fetchGenres } from '@/lib/data';
 import { auth } from '@/auth';
 import MovieCard from '@/app/ui/movie-card';
 import Pagination from '@/app/ui/pagination';
 import FilterableMovieList from '../ui/filterable-movie-list';
+import { UsersTitle } from '@/lib/definitions';
 
-export default async function DashboardPage({
+export default function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: { 
+    page?: string;
+    query?: string;
+    minYear?: string;
+    maxYear?: string;
+    genres?: string;
+  };
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DashboardContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function DashboardContent({
   searchParams,
 }: {
   searchParams?: { 
@@ -21,24 +41,29 @@ export default async function DashboardPage({
     return <div>Loading...</div>;
   }
   
-  const params = await searchParams;
-  const page = params?.page ? Number(params.page) : 1;
-  const query = params?.query || '';
-  const minYear = params?.minYear ? Number(params.minYear) : 1990;
+  const page = searchParams?.page ? Number(searchParams.page) : 1;
+  const query = searchParams?.query || '';
+  const minYear = searchParams?.minYear ? Number(searchParams.minYear) : 1990;
   const currentYear = new Date().getFullYear();
-  const maxYear = params?.maxYear ? Number(params.maxYear) : currentYear;
+  const maxYear = searchParams?.maxYear ? Number(searchParams.maxYear) : currentYear;
   
-  const allGenres = await fetchGenres();
-  const selectedGenres = params?.genres ? params.genres.split(',') : allGenres;
+  const [allGenres, titles] = await Promise.all([
+    fetchGenres(),
+    fetchTitles(
+      page,
+      minYear,
+      maxYear,
+      query,
+      searchParams?.genres 
+        ? searchParams.genres.split(',')
+        : [],
+      session.user.email
+    )
+  ]);
   
-  const movies = await fetchTitles(
-    page,
-    minYear,
-    maxYear,
-    query,
-    selectedGenres,
-    session.user.email
-  );
+  const selectedGenres = searchParams?.genres 
+    ? searchParams.genres.split(',')
+    : allGenres;
   
   return (
     <div>
@@ -54,12 +79,18 @@ export default async function DashboardPage({
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+        {titles.map((title: UsersTitle) => (
+          <MovieCard 
+            key={title.id} 
+            movie={title} 
+          />
         ))}
       </div>
       
-      <Pagination page={page} />
+      <Pagination 
+        page={page} 
+        totalPages={Math.ceil(titles.length / 6)} 
+      />
     </div>
   );
 }

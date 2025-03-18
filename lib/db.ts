@@ -26,14 +26,14 @@ export interface UsersTable {
 
 export interface FavoritesTable {
   id: Generated<string>;
-  title_id: Generated<string>;
-  user_id: Generated<string>;
+  title_id: string;
+  user_id: string;
 }
 
 export interface WatchLaterTable {
   id: Generated<string>;
-  title_id: Generated<string>;
-  user_id: Generated<string>;
+  title_id: string;
+  user_id: string;
 }
 
 export interface ActivitiesTable {
