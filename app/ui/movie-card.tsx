@@ -18,13 +18,16 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
   const [isWatchLater, setIsWatchLater] = useState(movie.watchLater);
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [actionError, setActionError] = useState('');
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isLoading) return;
     
-    setIsLoading(true);
+    setIsFavorite(!isFavorite);
+    
     try {
+      setIsLoading(true);
       const method = isFavorite ? 'DELETE' : 'POST';
       const response = await fetch(`/api/favorites/${movie.id}`, {
         method,
@@ -33,11 +36,16 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
         }
       });
       
-      if (response.ok) {
-        setIsFavorite(!isFavorite);
+      if (!response.ok) {
+        setIsFavorite(isFavorite);
+        setActionError('Failed to update favorites');
+        setTimeout(() => setActionError(''), 3000);
       }
     } catch (error) {
+      setIsFavorite(isFavorite);
       console.error('Error updating favorite status:', error);
+      setActionError('Failed to update favorites');
+      setTimeout(() => setActionError(''), 3000);
     } finally {
       setIsLoading(false);
     }
@@ -47,8 +55,10 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
     e.stopPropagation();
     if (isLoading) return;
     
-    setIsLoading(true);
+    setIsWatchLater(!isWatchLater);
+    
     try {
+      setIsLoading(true);
       const method = isWatchLater ? 'DELETE' : 'POST';
       const response = await fetch(`/api/watch-later/${movie.id}`, {
         method,
@@ -57,15 +67,23 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
         }
       });
       
-      if (response.ok) {
-        setIsWatchLater(!isWatchLater);
+      if (!response.ok) {
+        setIsWatchLater(isWatchLater);
+        setActionError('Failed to update watch later');
+        setTimeout(() => setActionError(''), 3000);
       }
     } catch (error) {
+      setIsWatchLater(isWatchLater);
       console.error('Error updating watch later status:', error);
+      setActionError('Failed to update watch later');
+      setTimeout(() => setActionError(''), 3000);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const description = movie.synposis || 
+    `${movie.title} (${movie.released}) - A ${movie.genre.toLowerCase()} film.`;
 
   return (
     <div 
@@ -85,12 +103,19 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
         />
       </div>
       
+      {/* Error message */}
+      {actionError && (
+        <div className="absolute top-2 left-0 right-0 mx-auto w-3/4 bg-red-500 text-white text-xs py-1 px-2 rounded text-center z-50">
+          {actionError}
+        </div>
+      )}
+      
       {isHovered && (
         <div className="absolute top-2 right-2 flex space-x-2 z-30">
           <button
             onClick={toggleFavorite}
             disabled={isLoading}
-            className="text-white hover:text-[#54F4D0]"
+            className={`text-white hover:text-[#54F4D0] transition-colors ${isLoading ? 'opacity-50' : ''}`}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <svg className="w-6 h-6" fill={isFavorite ? 'white' : 'none'} stroke="white" strokeWidth="1.5" viewBox="0 0 24 24">
@@ -101,7 +126,7 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
           <button
             onClick={toggleWatchLater}
             disabled={isLoading}
-            className="text-white hover:text-[#54F4D0]"
+            className={`text-white hover:text-[#54F4D0] transition-colors ${isLoading ? 'opacity-50' : ''}`}
             aria-label={isWatchLater ? 'Remove from watch later' : 'Add to watch later'}
           >
             {isWatchLater ? (
@@ -124,11 +149,12 @@ export default function MovieCard({ movie }: { movie: MovieType }) {
         }`}
         style={{
           height: 'auto',
-          maxHeight: isHovered ? '45%' : '0',
+          maxHeight: isHovered ? '70%' : '0',
+          overflowY: 'auto'
         }}
       >
         <h3 className="text-2xl font-semibold mb-3 text-white">{movie.title} ({movie.released})</h3>
-        <p className="text-white text-base mb-4 line-clamp-3 overflow-hidden">{movie.synposis}</p>
+        <p className="text-white text-base mb-4">{description}</p>
         <div>
           <span className="bg-[#54F4D0] text-[#00003C] px-4 py-2 rounded-full text-base font-medium">
             {movie.genre}

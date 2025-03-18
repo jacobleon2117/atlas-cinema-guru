@@ -2,15 +2,13 @@
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function Pagination({ page, totalPages }: { page: number, totalPages: number }) {
+export default function Pagination({ page, totalPages = 1 }: { page: number, totalPages?: number }) {
   const pathname = usePathname();
-  const urlSearchParams = useSearchParams();
+  const searchParams = useSearchParams();
   
   const createPageURL = (pageNum: number) => {
-    const params = new URLSearchParams(urlSearchParams.toString());
-    
+    const params = new URLSearchParams(searchParams.toString());
     params.set('page', pageNum.toString());
-    
     return `${pathname}?${params.toString()}`;
   };
 
@@ -24,19 +22,26 @@ export default function Pagination({ page, totalPages }: { page: number, totalPa
         <Link 
           href={page > 1 ? createPageURL(page - 1) : '#'}
           className={`py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium border-r border-[#00003c]/10 ${
-            page <= 1 ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995]'
+            page <= 1 ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995] transition-colors'
           }`}
+          aria-disabled={page <= 1}
+          tabIndex={page <= 1 ? -1 : undefined}
         >
           Previous
         </Link>
         <Link 
-          href={createPageURL(page + 1)}
+          href={page < totalPages ? createPageURL(page + 1) : '#'}
           className={`py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium ${
-            page >= totalPages ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995]'
+            page >= totalPages ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995] transition-colors'
           }`}
+          aria-disabled={page >= totalPages}
+          tabIndex={page >= totalPages ? -1 : undefined}
         >
           Next
         </Link>
+      </div>
+      <div className="ml-4 text-white hidden md:flex items-center">
+        Page {page} of {totalPages}
       </div>
     </div>
   );

@@ -79,3 +79,33 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+button[class*="button"] {
+  background-color: white !important;
+  color: black !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+button[class*="button"] span {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+  color: black !important;
+}
+
+button[class*="button"]:hover {
+  background-color: #f3f4f6 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  button[class*="button"] {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  button[class*="button"] span {
+    color: black !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+  }
+}

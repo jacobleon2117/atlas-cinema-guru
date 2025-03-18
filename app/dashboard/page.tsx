@@ -18,7 +18,7 @@ export default function DashboardPage({
   };
 }) {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="text-white text-center py-10">Loading...</div>}>
       <DashboardContent searchParams={searchParams} />
     </Suspense>
   );
@@ -38,59 +38,76 @@ async function DashboardContent({
   const session = await auth();
   
   if (!session?.user?.email) {
-    return <div>Loading...</div>;
+    return <div className="text-white text-center py-10">Please log in to view content</div>;
   }
   
-  const page = searchParams?.page ? Number(searchParams.page) : 1;
-  const query = searchParams?.query || '';
-  const minYear = searchParams?.minYear ? Number(searchParams.minYear) : 1990;
+  
+  const params = searchParams ? await Promise.resolve(searchParams) : {};
+  
+  const page = params.page ? Number(params.page) : 1;
+  const query = params.query || '';
+  const minYear = params.minYear ? Number(params.minYear) : 1990;
   const currentYear = new Date().getFullYear();
-  const maxYear = searchParams?.maxYear ? Number(searchParams.maxYear) : currentYear;
+  const maxYear = params.maxYear ? Number(params.maxYear) : currentYear;
   
-  const [allGenres, titles] = await Promise.all([
-    fetchGenres(),
-    fetchTitles(
-      page,
-      minYear,
-      maxYear,
-      query,
-      searchParams?.genres 
-        ? searchParams.genres.split(',')
-        : [],
-      session.user.email
-    )
-  ]);
-  
-  const selectedGenres = searchParams?.genres 
-    ? searchParams.genres.split(',')
-    : allGenres;
-  
-  return (
-    <div>
-      <div className="mb-8">
-        <FilterableMovieList 
-          initialQuery={query}
-          initialMinYear={minYear}
-          initialMaxYear={maxYear}
-          initialSelectedGenres={selectedGenres}
-          allGenres={allGenres}
-          currentYear={currentYear}
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {titles.map((title: UsersTitle) => (
-          <MovieCard 
-            key={title.id} 
-            movie={title} 
+  try {
+    const [allGenres, titles] = await Promise.all([
+      fetchGenres(),
+      fetchTitles(
+        page,
+        minYear,
+        maxYear,
+        query,
+        params.genres ? params.genres.split(',') : [],
+        session.user.email
+      )
+    ]);
+    
+    const selectedGenres = params.genres 
+      ? params.genres.split(',')
+      : [];
+    
+    const itemsPerPage = 6;
+    const totalPages = Math.max(1, Math.ceil(titles.length / itemsPerPage));
+    
+    return (
+      <div>
+        <div className="mb-8">
+          <FilterableMovieList 
+            initialQuery={query}
+            initialMinYear={minYear}
+            initialMaxYear={maxYear}
+            initialSelectedGenres={selectedGenres}
+            allGenres={allGenres}
+            currentYear={currentYear}
           />
-        ))}
+        </div>
+        
+        {titles.length === 0 ? (
+          <div className="text-white text-center py-10">
+            No movies found matching your criteria
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {titles.map((title: UsersTitle) => (
+                <MovieCard 
+                  key={title.id} 
+                  movie={title} 
+                />
+              ))}
+            </div>
+            
+            <Pagination 
+              page={page} 
+              totalPages={totalPages} 
+            />
+          </>
+        )}
       </div>
-      
-      <Pagination 
-        page={page} 
-        totalPages={Math.ceil(titles.length / 6)} 
-      />
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return <div className="text-white text-center py-10">Error loading content. Please try again.</div>;
+  }
 }
