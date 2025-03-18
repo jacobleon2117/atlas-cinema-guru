@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-type MovieWithTypo = {
+type MovieType = {
   id: string;
   title: string;
   synposis: string;
@@ -13,7 +13,7 @@ type MovieWithTypo = {
   image: string;
 };
 
-export default function MovieCard({ movie }: { movie: MovieWithTypo }) {
+export default function MovieCard({ movie }: { movie: MovieType }) {
   const [isFavorite, setIsFavorite] = useState(movie.favorited);
   const [isWatchLater, setIsWatchLater] = useState(movie.watchLater);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,81 +69,88 @@ export default function MovieCard({ movie }: { movie: MovieWithTypo }) {
 
   return (
     <div 
-      className="relative rounded-lg overflow-hidden shadow-lg border-2 border-[#1ED2AF]"
+      className="relative rounded-lg overflow-hidden shadow-lg border-2 border-[#54F4D0]"
       style={{ aspectRatio: '1/1' }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-full h-full">
+      <div className="w-full h-full relative">
         <Image
           src={movie.image || '/assets/placeholder.svg'}
           alt={movie.title}
           fill
-          className={`object-cover transition-all duration-300 ${isHovered ? 'scale-90' : 'scale-100'}`}
+          className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={movie.id === '665cb6f0-0d20-43ae-9a29-cf374c4d3805'}
         />
       </div>
       
-      <div className={`absolute top-2 right-2 flex space-x-2 z-20 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-        <button
-          onClick={toggleFavorite}
-          disabled={isLoading}
-          className={`p-2 rounded-full ${
-            isFavorite ? 'bg-[#1ED2AF] text-[#00003c]' : 'bg-white/10 text-white hover:bg-white/20'
-          } transition-colors`}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <svg 
-            className="w-5 h-5" 
-            fill={isFavorite ? 'currentColor' : 'none'} 
-            stroke="currentColor" 
-            viewBox="0 0 24 24" 
+      {isHovered && (
+        <div className="absolute top-2 right-2 flex space-x-2 z-30">
+          <button
+            onClick={toggleFavorite}
+            disabled={isLoading}
+            className="text-white hover:text-[#54F4D0]"
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" 
-            />
-          </svg>
-        </button>
-        
-        <button
-          onClick={toggleWatchLater}
-          disabled={isLoading}
-          className={`p-2 rounded-full ${
-            isWatchLater ? 'bg-[#1ED2AF] text-[#00003c]' : 'bg-white/10 text-white hover:bg-white/20'
-          } transition-colors`}
-          aria-label={isWatchLater ? 'Remove from watch later' : 'Add to watch later'}
-        >
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24" 
+            <svg 
+              className="w-6 h-6" 
+              fill={isFavorite ? 'white' : 'none'} 
+              stroke="white" 
+              strokeWidth="1.5"
+              viewBox="0 0 24 24" 
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" 
+              />
+            </svg>
+          </button>
+          
+          <button
+            onClick={toggleWatchLater}
+            disabled={isLoading}
+            className="text-white hover:text-[#54F4D0]"
+            aria-label={isWatchLater ? 'Remove from watch later' : 'Add to watch later'}
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
-            />
-          </svg>
-        </button>
-      </div>
+            <svg 
+              className="w-6 h-6" 
+              fill={isWatchLater ? 'white' : 'none'} 
+              stroke="white" 
+              strokeWidth="1.5"
+              viewBox="0 0 24 24" 
+            >
+              {isWatchLater ? (
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
+              ) : (
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+      )}
       
       <div 
-        className={`absolute bottom-0 left-0 right-0 bg-[#000020] bg-opacity-90 p-4 transition-opacity duration-300 ${
-          isHovered ? 'opacity-100' : 'opacity-0'
+        className={`absolute bottom-0 left-0 right-0 bg-[#00003C] pt-6 pb-6 px-5 transition-all duration-300 ${
+          isHovered ? 'opacity-100' : 'opacity-0 translate-y-full'
         }`}
+        style={{
+          height: 'auto',
+          maxHeight: isHovered ? '45%' : '0',
+        }}
       >
-        <h3 className="text-xl font-semibold mb-2 text-white">{movie.title} ({movie.released})</h3>
-        <div className="mb-2">
-          <span className="bg-[#1ED2AF] text-[#00003c] px-3 py-1 rounded-full text-sm font-medium">
+        <h3 className="text-2xl font-semibold mb-3 text-white">{movie.title} ({movie.released})</h3>
+        <p className="text-white text-base mb-4">{movie.synposis}</p>
+        <div>
+          <span className="bg-[#54F4D0] text-[#00003C] px-4 py-2 rounded-full text-base font-medium">
             {movie.genre}
           </span>
         </div>
-        <p className="text-gray-300 text-sm">{movie.synposis}</p>
       </div>
     </div>
   );

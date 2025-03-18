@@ -1,1 +1,83 @@
 @import "tailwindcss";
+
+/* Mobile styles */
+
+@media (max-width: 768px) {
+  .flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .flex-1 {
+    display: flex;
+    flex-direction: column;
+  }
+    
+  aside {
+    width: 100% !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    overflow: hidden;
+  }
+  
+  aside nav {
+    flex-direction: row !important;
+    justify-content: space-around;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0 !important;
+  }
+  
+  aside nav > a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  aside nav span {
+    display: inline !important;
+    margin-left: 8px !important;
+  }
+  
+  aside nav svg {
+    margin-right: 4px;
+  }
+  
+  aside > div:last-child {
+    display: none !important;
+  }
+  
+  aside > div:first-child {
+    height: 100%;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center;
+  }
+  
+  aside nav.space-y-6 > * {
+    margin: 0 !important;
+  }
+  
+  aside nav.space-y-6 {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .md\:flex-row {
+    flex-direction: column !important;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+}

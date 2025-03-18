@@ -1,52 +1,82 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function CollapsibleSidebar({ activities }: { activities: any[] }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   return (
     <aside 
-      className={`transition-all duration-300 bg-[#1ED2AF] ${isHovered ? 'w-56' : 'w-16'}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`transition-all duration-300 bg-[#40d5b2] ${isHovered && !isMobile ? 'w-64' : isMobile ? 'w-full' : 'w-22'}`}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
-      <div className="p-4 flex flex-col h-full">
-        <nav className="flex flex-col space-y-6">
+      <div className="p-4 flex flex-col">
+        <nav className="flex flex-col space-y-6 mb-8">
           <Link href="/dashboard" className={`flex items-center text-white hover:opacity-80 ${pathname === '/dashboard' ? 'font-bold' : ''}`}>
-            <svg className="w-6 h-6 min-w-6" fill="white" viewBox="0 0 24 24">
-              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            {isHovered && <span className="ml-3">Home</span>}
+            <div className={isMobile ? '' : !isHovered ? 'w-full flex justify-center' : 'w-6'}>
+              <svg className="w-6 h-6" fill="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2v11z"></path>
+              </svg>
+            </div>
+            {(isHovered || isMobile) && <span className="ml-3">Home</span>}
           </Link>
           
           <Link href="/dashboard/favorites" className={`flex items-center text-white hover:opacity-80 ${pathname === '/dashboard/favorites' ? 'font-bold' : ''}`}>
-            <svg className="w-6 h-6 min-w-6" fill="white" viewBox="0 0 24 24">
-              <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-            </svg>
-            {isHovered && <span className="ml-3">Favorites</span>}
+            <div className={isMobile ? '' : !isHovered ? 'w-full flex justify-center' : 'w-6'}>
+              <svg className="w-6 h-6" fill="white" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            {(isHovered || isMobile) && <span className="ml-3">Favorites</span>}
           </Link>
           
           <Link href="/dashboard/watch-later" className={`flex items-center text-white hover:opacity-80 ${pathname === '/dashboard/watch-later' ? 'font-bold' : ''}`}>
-            <svg className="w-6 h-6 min-w-6" fill="white" viewBox="0 0 24 24">
-              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {isHovered && <span className="ml-3">Watch Later</span>}
+            <div className={isMobile ? '' : !isHovered ? 'w-full flex justify-center' : 'w-6'}>
+              <svg className="w-6 h-6" fill="white" viewBox="0 0 24 24">
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" />
+              </svg>
+            </div>
+            {(isHovered || isMobile) && <span className="ml-3">Watch Later</span>}
           </Link>
         </nav>
-        
-        {isHovered && (
-          <div className="mt-8 bg-[#4ad9ba] rounded-md p-4">
+      </div>
+      
+      {isHovered && !isMobile && (
+        <div className="px-4 pb-4 mt-0">
+          <div className="bg-[#54F4D0] rounded-md p-4 mb-16">
             <h3 className="text-lg font-semibold text-[#00003c] mb-2">Latest Activities</h3>
-            <div className="max-h-96 overflow-y-auto">
+            <div className="max-h-[500px] overflow-y-auto">
               <div className="space-y-4">
                 {activities.map((activity) => (
                   <div key={activity.id} className="text-sm">
                     <div className="text-[#00003c]">
-                      {new Date(activity.timestamp).toLocaleDateString()}, {new Date(activity.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      {new Date(activity.timestamp).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}, {new Date(activity.timestamp).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
                     </div>
                     <div className="text-[#00003c] font-medium">
                       {activity.activity === 'FAVORITED' ? 'Favorited ' : 'Added '}
@@ -61,8 +91,8 @@ export default function CollapsibleSidebar({ activities }: { activities: any[] }
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </aside>
   );
 }

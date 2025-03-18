@@ -19,7 +19,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="w-full bg-[#3fe0c0] flex justify-between p-4 items-center">
+      <header className="w-full bg-[#54F4D0] flex justify-between p-4 items-center">
         <div className="flex items-center">
           <svg className="w-6 h-6 mr-2" fill="none" stroke="#00003c" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
@@ -27,7 +27,7 @@ export default async function DashboardLayout({
           <span className="font-bold text-[#00003c] text-xl">Cinema Guru</span>
         </div>
         <div className="flex items-center">
-          <div className="mr-4 text-[#00003c]">Welcome, {session?.user?.email}</div>
+          <div className="mr-4 text-[#00003c] hidden md:block">Welcome, {session?.user?.email}</div>
           <form action={async () => {
             'use server';
             await signOut({ redirectTo: '/' });

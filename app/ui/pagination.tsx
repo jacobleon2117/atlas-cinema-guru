@@ -17,7 +17,7 @@ export default function Pagination({ page }: { page: number }) {
       <div className="flex rounded-full overflow-hidden">
         <Link 
           href={page > 1 ? createPageURL(page - 1) : '#'}
-          className={`py-3 px-6 bg-[#1ED2AF] text-[#00003c] text-center font-medium border-r border-[#00003c]/10 ${
+          className={`py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium border-r border-[#00003c]/10 ${
             page <= 1 ? 'opacity-50 pointer-events-none' : 'hover:bg-[#19b995]'
           }`}
         >
@@ -25,7 +25,7 @@ export default function Pagination({ page }: { page: number }) {
         </Link>
         <Link 
           href={createPageURL(page + 1)}
-          className="py-3 px-6 bg-[#1ED2AF] text-[#00003c] text-center font-medium hover:bg-[#19b995]"
+          className="py-3 px-6 bg-[#54F4D0] text-[#00003c] text-center font-medium hover:bg-[#19b995]"
         >
           Next
         </Link>

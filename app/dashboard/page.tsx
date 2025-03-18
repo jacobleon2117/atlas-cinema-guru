@@ -41,58 +41,58 @@ export default async function DashboardPage({
   
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6 text-white">Discover Movies</h1>
-      
-      <div className="bg-[#1c1f50] p-6 rounded-lg mb-8">
-        <div className="mb-6">
-          <label htmlFor="search" className="block text-white mb-2">Search</label>
-          <input 
-            type="text" 
-            id="search" 
-            placeholder="Search Movies..." 
-            defaultValue={query}
-            className="w-full px-4 py-3 bg-[#2d3166] border border-[#3d4185] rounded-full text-white focus:outline-none"
-          />
-        </div>
-        
-        <div className="grid grid-cols-2 gap-8 mb-6">
-          <div>
-            <label className="block text-white mb-2">Min Year</label>
-            <input 
-              type="number" 
-              defaultValue={minYear}
-              min="1900" 
-              max={currentYear}
-              className="w-full px-4 py-3 bg-[#2d3166] border border-[#3d4185] rounded-full text-white focus:outline-none"
-            />
+      <div className="mb-8">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-1 space-y-4">
+            <div className="mb-4">
+              <label htmlFor="search" className="block text-white mb-2">Search</label>
+              <input 
+                type="text" 
+                id="search" 
+                placeholder="Search Movies..." 
+                defaultValue={query}
+                className="w-full px-4 py-3 bg-[#2d3166] border border-[#54F4D0] rounded-full text-white focus:outline-none"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-white mb-2">Min Year</label>
+                <input 
+                  type="number" 
+                  defaultValue={minYear}
+                  min="1900" 
+                  max={currentYear}
+                  className="w-full px-4 py-3 bg-[#2d3166] border border-[#54F4D0] rounded-full text-white focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-white mb-2">Max Year</label>
+                <input 
+                  type="number" 
+                  defaultValue={maxYear}
+                  min="1900" 
+                  max={currentYear}
+                  className="w-full px-4 py-3 bg-[#2d3166] border border-[#54F4D0] rounded-full text-white focus:outline-none"
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <label className="block text-white mb-2">Max Year</label>
-            <input 
-              type="number" 
-              defaultValue={maxYear}
-              min="1900" 
-              max={currentYear}
-              className="w-full px-4 py-3 bg-[#2d3166] border border-[#3d4185] rounded-full text-white focus:outline-none"
-            />
-          </div>
-        </div>
-        
-        <div>
-          <label className="block text-white mb-2">Genres</label>
-          <div className="flex flex-wrap gap-2">
-            {allGenres.map(genre => (
-              <button
-                key={genre}
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  selectedGenres.includes(genre) 
-                    ? 'bg-[#1ED2AF] text-[#00003c]' 
-                    : 'bg-[#2d3166] text-white hover:bg-[#3d4185]'
-                }`}
-              >
-                {genre}
-              </button>
-            ))}
+          
+          <div className="flex-1">
+            <label className="block text-white mb-2">Genres</label>
+            <div className="flex flex-wrap gap-2">
+              {allGenres.map(genre => (
+<button
+  key={genre}
+  className={`px-4 py-2 rounded-full text-sm font-medium border border-[#54F4D0] transition-colors 
+    bg-transparent hover:bg-[#54F4D0] hover:text-black`}
+>
+  {genre}
+</button>
+
+              ))}
+            </div>
           </div>
         </div>
       </div>
